@@ -3,7 +3,7 @@ services:
   node:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: ./build/node/Dockerfile
     # command: sh ./docker-start.sh
     environment:
       - NODE_ENV=dev
@@ -15,6 +15,22 @@ services:
       - default
     depends_on:
       - mysql
+  vue:
+    build:
+      context: .
+      dockerfile: ./build/vue/Dockerfile
+    command: sh -c "npm install && npm run dev"
+    environment:
+      - NODE_ENV=dev
+      - HOST=0.0.0.0
+    volumes:
+      - ./client:/home/app
+    ports:
+      - "8080:8080"
+    networks:
+      - default
+    depends_on:
+      - node
   mysql:
     image: mysql:5.7
     environment:
